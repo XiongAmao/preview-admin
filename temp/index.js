@@ -19,7 +19,7 @@
       })
     })
   }
-
+  // TODO: encodeURIComponent() encodeURI()
   function replaceHash(oriHash, hash) {
     if (oriHash.indexOf('?') !== -1) {
       return oriHash.replace(/\?.+/, '?' + hash)
