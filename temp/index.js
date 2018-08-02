@@ -15,19 +15,19 @@
         var hash = 'artboard' + e.currentTarget.getAttribute('data-index')
         windowHash = replaceHash(windowHash, hash)
         window.history.replaceState(null, null, windowHash)
-        // 并入react spa ，使用react 相关router
       })
     })
   }
   // TODO: encodeURIComponent() encodeURI()
+  // https://www.npmjs.com/package/js-base64
   function replaceHash(oriHash, hash) {
     if (oriHash.indexOf('?') !== -1) {
       return oriHash.replace(/\?.+/, '?' + hash)
     }
     return oriHash + '?' + hash
   }
-  function on(div, event, fn) {
-    div.addEventListener(event, fn)
+  function on(element, event, fn) {
+    element.addEventListener(event, fn)
   }
 })()
 

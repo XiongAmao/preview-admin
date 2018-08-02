@@ -1,0 +1,13 @@
+root = true
+
+[*]
+charset = utf-8
+#缩进风格：空格
+indent_style = space
+#缩进大小2
+indent_size = 2
+end_of_line = lf
+#去掉换行行首的任意空白字符
+insert_final_newline = true
+#保存文件时文件以一个空白行结尾
+trim_trailing_whitespace = true
