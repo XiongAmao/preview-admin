@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import { on, decode, encode, getQueryObj } from '../../libs/util'
 
-
 class UiIframe extends Component {
   constructor (props) {
     super(props)
@@ -14,9 +13,6 @@ class UiIframe extends Component {
     this.decodePath(this.props.path)
     const iframe = ReactDOM.findDOMNode(this.refs.iframe)
     on(iframe, 'load', this.onLoad)
-  }
-  componentDidUpdate (prevProps, prevState) {
-
   }
   onLoad = () => {
     const iframe = ReactDOM.findDOMNode(this)
