@@ -44,8 +44,18 @@ const getPreviewList = (entryPath) => {
   return previewList
 }
 
+const createJTI = () => {
+  var s = []
+  var hexDigits = '0123456789abcdefghijklmnopqrstuvwxyz'
+  for (var i = 0; i < 32; i++) {
+    s[i] = hexDigits.substr(Math.floor(Math.random() * 36), 1)
+  }
+  id = s.join('')
+  return id
+}
 
 module.exports = {
   checkPathExists,
-  getRpList
+  getPreviewList,
+  createJTI
 }
