@@ -1,12 +1,28 @@
 const express = require('express')
-
-const userRouter = require('./user')
+const path = require('path')
+const staticRoute = require('./routes/static')
+const apiRoute = require('./routes/api')
 
 const app = express()
 
-app.use('/user', userRouter)
+app.use('/api', apiRoute)
+app.use('/', staticRoute)
 
-app.listen(9090, function() {
-  console.log('path: localhost:9090')
+app.use((req, res, next) => {
+  res.status(404).json({
+      code: 404,
+      errMsg: 'Not Found'
+  })
 })
 
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+});
+
+module.exports = app;

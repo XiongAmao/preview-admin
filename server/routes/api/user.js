@@ -1,10 +1,13 @@
 const express = require('express')
-const Router = express.router()
+const jwt = require('jsonwebtoken')
+const UserModel = require('../db/model/User')
+const { MD5_SUFFIX, md5, secretKey } = require('../constant')
 
-Router.get('/info', function(req, res) {
-  return res.json({code: 1})
-})
+const userRouter = express.Router()
+// TODO: user业务逻辑
+userRouter.get()
 
+module.exports = userRouter
 
 // mongoose.connection.on('connected', function() {
 //   console.log('mongo connected')
@@ -25,5 +28,3 @@ Router.get('/info', function(req, res) {
 // }, function(err, doc) {
 //   console.log(doc)
 // })
-
-module.exports = Router
