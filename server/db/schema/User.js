@@ -20,14 +20,7 @@ const userSchema = new Schema({
     require: true
   },
   permission: [],
-  token_list: [{
-    token: {
-      type: String
-    },
-    exp: {
-      type: Number
-    }
-  }],
+  token_list: [String],
   rp_list: [String],
   sketch_list: [String]
 })

@@ -1,10 +1,10 @@
 const express = require('express')
-const {jwtAuth} = require('../jwt')
+const { jwtAuth } = require('../../middleware/auth')
 const testRouter = express.Router()
 
 testRouter.use('/list', jwtAuth, (req, res, next) => {
-    res.json({
-      'shit': req.tokenObj
-    })
+  return res.json({
+    'shit': req.tokenObj
+  })
 })
 module.exports = testRouter

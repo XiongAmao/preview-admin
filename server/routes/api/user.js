@@ -1,98 +1,57 @@
 const express = require('express')
 const jwt = require('jsonwebtoken')
-const { UserModel } = require('../../db/model/User')
-const { MD5_SUFFIX, md5, secretKey } = require('../../constant')
+const { UserModel, addUserToken } = require('../../db/model/User')
 const { createJTI } = require('../../libs/util')
+const jwtCache = require('../cache/jwtCache')
+const { jwtAuth } = require('../../middleware/auth')
+const { MD5_SUFFIX, md5, secretKey } = require('../../constant')
 
 const userRouter = express.Router()
 // TODO: user业务逻辑
-userRouter.get('/:userid', (req, res) => {
-  console.log(req.params.userid)
-})
 
 userRouter.post('/login', (req, res, next) => {
   const { username, password } = req.body
-  const tokenObj = {
-    username
-  }
+  const tokenObj = { username }
+
   if (!username || !password) {
     return next({ code: 400, msg: '请输入账号或密码' })
   }
-  UserModel.findOne({
-    username
-  }, (err, user) => {
-    if (err) return next()
 
+  UserModel.findOne({ username }, (err, user) => {
+    if (err) return next(err)
     if (user) {
-      UserModel.findOne({ //判断密码是否正确
+      UserModel.findOne({
         username: username,
-        password: md5(password + MD5_SUFFIX),
+        password: md5(password + MD5_SUFFIX)
       }, (err, user) => {
+        if (err) return next(err)
         if (user !== null) {
           // 用户登录成功过后生成token返给前端
-          let token = jwt.sign(tokenObj, secretKey, {
-            expiresIn: '30 days',
+          const token = jwt.sign(tokenObj, secretKey, {
+            expiresIn: 1,
             jwtid: createJTI()
           })
-          return res.json({
-            code: 200,
-            message: '登录成功',
-            token: 'Bearer ' + token,
-            username
+          addUserToken(username, token).then(() => {
+            jwtCache.addTokenCache(username, token)
+            return res.json({
+              code: 200,
+              message: '登录成功',
+              token: 'Bearer ' + token,
+              username
+            })
+          }, err => {
+            return next(err)
           })
         } else {
-          return next({
-            msg: '账号或密码错误'
-          })
+          return next({ status: 400, code: 400, msg: '账号或密码错误' })
         }
       })
-    } else {
-      return next({
-        msg: '账号或密码不正确'
-      })
-    }
+    } else { return next({ msg: '账号或密码不正确' }) }
   })
 })
 
-userRouter.post('/logout', (req, res, next) => {
-  const { username, password } = req.body
-  const tokenObj = {
-    username
-  }
-  UserModel.findOne({
-    username
-  }, (err, user) => {
-    if (err) return next()
+userRouter.post('/logout', jwtAuth, (req, res, next) => {
 
-    if (user) {
-      UserModel.findOne({ //判断密码是否正确
-        username: username,
-        password: md5(password + MD5_SUFFIX),
-      }, (err, user) => {
-        if (user !== null) {
-          // 用户登录成功过后生成token返给前端
-          let token = jwt.sign(tokenObj, secretKey, {
-            expiresIn: '30 days',
-            jwtid: createJTI()
-          })
-          return res.json({
-            code: 200,
-            message: '登录成功',
-            token: 'Bearer ' + token,
-            username
-          })
-        } else {
-          return next({
-            msg: '账号或密码错误'
-          })
-        }
-      })
-    } else {
-      return next({
-        msg: '账号或密码不正确'
-      })
-    }
-  })
 })
 
 userRouter.post('/register', (req, res, next) => {
@@ -120,20 +79,25 @@ userRouter.post('/register', (req, res, next) => {
       const newUser = new UserModel(insertObj)
       newUser.save(insertObj, (err, doc) => {
         if (err) {
-          return res.json({ result: false, msg: '用户创建失败' })
+          return next(err)
         } else {
-          console.log(doc);
           return res.json({ code: 200, msg: '用户创建成功' })
         }
       })
     } else {
-      return res.status(400).json({
-        code: 400,
+      return next({
+        status: 400,
+        code: 4003,
         msg: '用户名已存在'
       })
     }
   })
 })
+
+userRouter.get('/:userid', (req, res) => {
+  console.log(req.params.userid)
+})
+
 module.exports = userRouter
 
 // mongoose.connection.on('connected', function() {
