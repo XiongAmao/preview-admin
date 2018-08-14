@@ -1,10 +1,11 @@
 import Axios from '@/libs/axios.js'
 
-export const login = ({ userName, password }) => {
+export const login = ({ username, password }) => {
   const data = {
-    account: userName,
-    pw: password
+    username: username,
+    password: password
   }
+  console.log(data)
   return Axios.request({
     url: '/api/user/login',
     method: 'post',

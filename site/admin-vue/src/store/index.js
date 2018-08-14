@@ -29,7 +29,7 @@ export default new Vuex.Store({
     localCachePlugin([
       { type: 'user/setUserUUID', check: token },
       { type: 'user/setUserAccount', check: token },
-      { type: 'user/setToken', check: token },
+      { type: 'user/setToken', check: token }
     ])
   ]
 })

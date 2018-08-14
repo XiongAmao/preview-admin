@@ -1,12 +1,12 @@
 import axios from '@/libs/axios.js'
 
-export const test = ({p1, p2}) => {
-  const data = {
-    p1, p2
-  }
+export const getIframe = () => {
   return axios.request({
-    url: '/mock/test',
-    data,
-    method: 'post'
+    url: '/rp/some-project/1.1/project/index.html',
+    method: 'get'
   })
+}
+
+export default {
+  getIframe
 }

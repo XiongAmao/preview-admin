@@ -1,14 +1,14 @@
 <template>
   <Form ref="form" :model="form" :rules="rules" >
-    <i-form-item prop="userName">
+    <i-form-item prop="username">
       <i-input
         type="text"
-        v-model="form.userName"
+        v-model="form.username"
         placeholder="账号"
         size="large"
         @on-keydown.enter="handleSubmit('form')"
       >
-        <Icon type="ios-person-outline" slot="prepend"></Icon>
+        <i-icon type="ios-person-outline" slot="prepend"></i-icon>
       </i-input>
     </i-form-item>
     <i-form-item prop="password">
@@ -19,7 +19,7 @@
         size="large"
         @on-keydown.enter="handleSubmit('form')"
       >
-        <Icon type="ios-locked-outline" slot="prepend"></Icon>
+        <i-icon type="ios-lock-outline" slot="prepend"></i-icon>
       </i-input>
     </i-form-item>
     <i-form-item>
@@ -42,11 +42,11 @@
       return {
         loading: false,
         form: {
-          userName: '',
+          username: '',
           password: ''
         },
         rules: {
-          userName: [ { required: true, message: '请填写账号', trigger: 'blur' } ],
+          username: [ { required: true, message: '请填写账号', trigger: 'blur' } ],
           password: [ { required: true, message: '请填写密码', trigger: 'blur' } ]
         }
       }
@@ -64,7 +64,7 @@
       login() {
         this.loading = true
         this.handleLogin({
-          userName: this.form.userName,
+          username: this.form.username,
           password: this.form.password
         }).then(res => {
           this.loading = false

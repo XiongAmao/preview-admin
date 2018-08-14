@@ -10,7 +10,11 @@ const routes = [
     },
     component: () => import('@/views/login/login.vue')
   },
-  // TODO: 入口暂定
+  {
+    path: '/',
+    name: 'test',
+    component: () => import('@/views/test/test.vue')
+  },
   ...rp,
   ...user,
   {

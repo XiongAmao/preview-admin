@@ -19,10 +19,10 @@ export default {
     }
   },
   actions: {
-    handleLogin ({ commit }, { userName, password }) {
-      userName = userName.trim()
+    handleLogin ({ commit }, { username, password }) {
+      username = username.trim()
       return new Promise((resolve, reject) => {
-        login({ userName, password }).then(res => {
+        login({ username, password }).then(res => {
           commit('setUsername', res.username)
           commit('setToken', res.token)
           resolve(res)

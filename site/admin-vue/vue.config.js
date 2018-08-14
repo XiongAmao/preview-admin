@@ -9,6 +9,7 @@ const resolve = (dir) => {
 module.exports = {
   baseUrl: process.env.NODE_ENV === 'production' ? '/admin/' : '/',
   // 根据需要配置完整的路径 https://cli.vuejs.org/config/#baseurl
+  outputDir: path.resolve('../../server/dist'),
   productionSourceMap: false,
   devServer: {
     before (app) {
@@ -17,7 +18,11 @@ module.exports = {
     proxy: {
       '/api': {
         // 开发环境
-        target: '',
+        target: 'http://0.0.0.0:9992/',
+        changeOrigin: true
+      },
+      '/rp': {
+        target: 'http://0.0.0.0:9992/',
         changeOrigin: true
       }
     }

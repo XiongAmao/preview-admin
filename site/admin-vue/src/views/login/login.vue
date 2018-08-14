@@ -6,7 +6,7 @@
       dis-hover
     >
       <template class="card-title" slot="title">
-        <Icon size="16" type="log-in" /><span style="padding-left: 16px;font-weight: 600;">智创优瓷运营后台</span>
+        <Icon size="16" type="log-in" /><span style="padding-left: 16px;font-weight: 600;">工具后台</span>
       </template>
 
       <main class="login-form">
@@ -18,7 +18,7 @@
 
 <script>
   import LoginForm from './components/login-form.vue'
-  
+
   export default {
     components: {
       LoginForm
