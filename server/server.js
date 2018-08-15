@@ -1,12 +1,26 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const session = require('express-session')
+const MongoStore = require('connect-mongo')(session)
 
 const mongoose = require('./db/config/mongoose')
 const staticRoute = require('./routes/static')
 const apiRoute = require('./routes/api')
 
 const app = express()
-const db = mongoose() // 需要保留否则数据库不连接
+const db = mongoose() // return connection
+
+// 引入session-cookie
+app.use(session({
+  secret: 'some secret here', // TODO: 密钥
+  saveUninitialized: true,
+  resave: false,
+  cookie: { maxAge: 1000 * 3600 * 30 },
+  name: '_session_id',
+  store: new MongoStore({
+    mongooseConnection: db
+  })
+}))
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -15,6 +29,7 @@ app.use('/', staticRoute)
 app.use('/api', apiRoute)
 
 app.use((req, res, next) => {
+  console.log(404)
   res.status(404).json({
     code: 404,
     msg: 'Not Found'

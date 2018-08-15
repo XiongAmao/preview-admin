@@ -28,7 +28,7 @@ userRouter.post('/login', (req, res, next) => {
         if (user !== null) {
           // 用户登录成功过后生成token返给前端
           const token = jwt.sign(tokenObj, secretKey, {
-            expiresIn: 1,
+            expiresIn: '30 days',
             jwtid: createJTI()
           })
           addUserToken(username, token).then(() => {

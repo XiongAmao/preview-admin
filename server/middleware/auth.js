@@ -37,9 +37,14 @@ const jwtAuth = (req, res, next) => {
       })
     } else {
       req.jwtPayload = Object.assign({}, decoded)
-      next()
+      return next()
     }
   })
+}
+
+const rpAuth = (req, res, next) => {
+  console.log('go')
+  next()
 }
 
 const getToken = (headers) => {
@@ -57,5 +62,6 @@ const getToken = (headers) => {
 }
 
 module.exports = {
-  jwtAuth
+  jwtAuth,
+  rpAuth
 }

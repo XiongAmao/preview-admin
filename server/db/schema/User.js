@@ -4,7 +4,7 @@ const Schema = mongoose.Schema
 const userSchema = new Schema({
   username: {
     type: String,
-    index:true,
+    index: true,
     require: true
   },
   password: {
@@ -25,7 +25,7 @@ const userSchema = new Schema({
   sketch_list: [String]
 })
 
-userSchema.methods.findTokens = function(cb) {
+userSchema.methods.findTokens = function (cb) {
   return this.model('user').find({username: this.username}, cb)
 }
 
