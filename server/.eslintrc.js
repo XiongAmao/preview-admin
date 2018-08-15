@@ -7,4 +7,9 @@ module.exports = {
     "ecmaVersion": 8,
     "sourceType": "module",
   },
+  "rules": {
+    "no-multi-spaces": {
+      "ignoreEOLComments": true
+    }
+  }
 }
