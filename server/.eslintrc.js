@@ -8,8 +8,9 @@ module.exports = {
     "sourceType": "module",
   },
   "rules": {
-    "no-multi-spaces": {
+    "no-multi-spaces": [2, {
       "ignoreEOLComments": true
-    }
+    }],
+    "semi": 0
   }
 }
