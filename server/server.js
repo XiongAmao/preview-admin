@@ -3,19 +3,23 @@ const bodyParser = require('body-parser')
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session)
 
-const mongoose = require('./db/config/mongoose')
+const mongoose = require('./db')
 const staticRoute = require('./routes/static')
 const apiRoute = require('./routes/api')
+const secretKey = require('./constant').secretKey
 
 const app = express()
 const db = mongoose() // return connection
 
 // 引入session-cookie
 app.use(session({
-  secret: 'some secret here', // TODO: 密钥
+  secret: secretKey,
   saveUninitialized: true,
   resave: false,
-  cookie: { maxAge: 1000 * 3600 * 30 },
+  cookie: {
+    maxAge: 1000 * 3600 * 30,
+    httpOnly: true
+  },
   name: '_session_id',
   store: new MongoStore({
     mongooseConnection: db

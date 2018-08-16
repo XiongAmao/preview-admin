@@ -22,7 +22,7 @@ userRouter.post('/login', (req, res, next) => {
     if (user) {
       UserModel.findOne({
         username: username,
-        password: md5(password + MD5_SUFFIX)
+        password: md5(password + MD5_SUFFIX)   //
       }, (err, user) => {
         if (err) return next(err)
         if (user !== null) {
@@ -99,23 +99,3 @@ userRouter.get('/:userid', (req, res) => {
 })
 
 module.exports = userRouter
-
-// mongoose.connection.on('connected', function() {
-//   console.log('mongo connected')
-// })
-
-// const User = mongoose.model('account', new mongoose.Schema({
-//   account: {type: String, require: true},
-//   role: {type: Array},
-//   admin: {type: Boolean},
-//   rpList: {type: Array}
-// }))
-
-// User.create({
-//   account: 'admin',
-//   role: ['admin'],
-//   admin: false,
-//   rpList: ['admin/adsdf/adfasdf']
-// }, function(err, doc) {
-//   console.log(doc)
-// })
