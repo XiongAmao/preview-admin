@@ -1,9 +1,8 @@
 const express = require('express')
 const apiRouter = express.Router()
-const userRoute = require('./user')
-const rpRoute = require('./rp')
-const testRoute = require('./test')
-// const sketchRoute = require('./sketch')
+const userRoute = require('./user_route')
+const rpRoute = require('./rp_route')
+const testRoute = require('./test_route')
 
 apiRouter.use('/user', userRoute)
 apiRouter.use('/rp', rpRoute)

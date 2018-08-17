@@ -1,4 +1,4 @@
-const errList = require('../constant/error-list')
+const errList = require('../config/error-list')
 
 function CustomError (error) {
   const { name, code, msg, status } = error

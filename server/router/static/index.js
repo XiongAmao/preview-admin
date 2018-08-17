@@ -2,8 +2,8 @@ const path = require('path')
 const express = require('express')
 const staticRoute = express.Router()
 
-const rpStatic = require('./rp')
-const sketchStatic = require('./sketch')
+const rpStatic = require('./rp_route')
+const sketchStatic = require('./sketch_route')
 
 // 后台入口资源
 staticRoute.use(express.static(path.resolve(__dirname, '../../dist')))

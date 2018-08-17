@@ -25,8 +25,4 @@ const userSchema = new Schema({
   sketch_list: [String]
 })
 
-userSchema.methods.findTokens = function (cb) {
-  return this.model('user').find({username: this.username}, cb)
-}
-
 module.exports = userSchema

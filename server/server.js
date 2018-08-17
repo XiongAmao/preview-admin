@@ -4,9 +4,9 @@ const session = require('express-session')
 const MongoStore = require('connect-mongo')(session)
 
 const mongoose = require('./db')
-const staticRoute = require('./routes/static')
-const apiRoute = require('./routes/api')
-const secretKey = require('./constant').secretKey
+const staticRoute = require('./router/static')
+const apiRoute = require('./router/api')
+const secretKey = require('./config').secretKey
 
 const app = express()
 const db = mongoose() // return connection
@@ -33,7 +33,6 @@ app.use('/', staticRoute)
 app.use('/api', apiRoute)
 
 app.use((req, res, next) => {
-  console.log(404)
   res.status(404).json({
     code: 404,
     msg: 'Not Found'

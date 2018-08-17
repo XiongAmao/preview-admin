@@ -1,10 +1,7 @@
-const mongoose = require('mongoose')
-const userSchema = require('../schema/User')
-const getError = require('../../libs/error')
+const UserModel = require('../db/model/user_model')
+const getError = require('../libs/error')
 
-const { MD5_SUFFIX, md5 } = require('../../constant')
-
-const UserModel = mongoose.model('user', userSchema)
+const { MD5_SUFFIX, md5 } = require('../config')
 
 const addUserToken = (username, token) => {
   return UserModel.update({username}, { $push: {
@@ -58,15 +55,9 @@ const addUser = (username, password) => {
   })
 }
 
-const removeUser = () => {}
-const modifyRpList = () => {}
-
 module.exports = {
-  UserModel,
-  addUserToken,
   removeUserToken,
+  addUserToken,
   addUser,
-  checkUserPassword,
-  removeUser,
-  modifyRpList
+  checkUserPassword
 }

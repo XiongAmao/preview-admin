@@ -1,12 +1,6 @@
-const express = require('express')
-const { UserModel, checkUserPassword, addUser } = require('../../db/model/User')
-const { jwtAuth } = require('../../middleware/auth')
-const { MD5_SUFFIX, md5, secretKey } = require('../../constant')
+const { checkUserPassword, addUser } = require('../service/user_service')
 
-const userRouter = express.Router()
-// TODO: user业务逻辑
-
-userRouter.post('/login', (req, res, next) => {
+const userLogin = (req, res, next) => {
   const { username, password } = req.body
 
   if (!username || !password) {
@@ -25,9 +19,9 @@ userRouter.post('/login', (req, res, next) => {
     .catch(err => {
       return next(err)
     })
-})
+}
 
-userRouter.post('/logout', (req, res, next) => {
+const userLogout = (req, res, next) => {
   const session = req.session
   if (session.hasLogin) {
     session.regenerate(() => {
@@ -42,9 +36,9 @@ userRouter.post('/logout', (req, res, next) => {
       code: 20001
     })
   }
-})
+}
 
-userRouter.post('/register', (req, res, next) => {
+const userRegister = (req, res, next) => {
   const { username, password } = req.body
 
   if (!username || !password) {
@@ -60,10 +54,25 @@ userRouter.post('/register', (req, res, next) => {
     .catch(err => {
       next(err)
     })
-})
+}
 
-userRouter.get('/:userid', (req, res) => {
-  console.log(req.params.userid)
-})
+const getUserInfo = (req, res, next) => {
 
-module.exports = userRouter
+}
+
+const userList = (req, res, next) => {
+
+}
+
+const userAuthModify = (req, res, next) => {
+
+}
+
+module.exports = {
+  userLogout,
+  userLogin,
+  userRegister,
+  getUserInfo,
+  userList,
+  userAuthModify
+}
