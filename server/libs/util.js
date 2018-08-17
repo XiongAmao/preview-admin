@@ -1,13 +1,12 @@
 const fs = require('fs')
 const glob = require('glob')
-const path = require('path')
 
 const checkPathExists = (path) => {
   const exist = fs.existsSync(path)
-  if(!exist) {
+  if (!exist) {
     // TODO: colorful!!
     throw new Error(`
-      Cant\' find static directory: ${path}
+      Cant' find static directory: ${path}
       please set path in config/index.js
     `)
   } else {
@@ -25,11 +24,11 @@ const getPreviewList = (entryPath) => {
 
   const previewList = result.map(path => {
     const urlPath = path.replace(entryPath, '') // 资源url入口
-    const dirPath = urlPath.replace('\/index.html', '') // 目录路径
+    const dirPath = urlPath.replace('/index.html', '') // 目录路径
     const dirList = dirPath.split('/') // ['', '项目', '子项目']
 
     // 现在定成2级目录，如果要分层，需要再加一层目录或者文件夹，以rp文件夹为准
-    if(dirList.length !== 2) return undefined
+    if (dirList.length !== 2) return undefined
 
     const projectName = dirList[1]
     const subName = dirList[2]
@@ -50,8 +49,7 @@ const createJTI = () => {
   for (var i = 0; i < 32; i++) {
     s[i] = hexDigits.substr(Math.floor(Math.random() * 36), 1)
   }
-  id = s.join('')
-  return id
+  return s.join('')
 }
 
 module.exports = {

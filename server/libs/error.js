@@ -1,14 +1,28 @@
-function UnauthorizedError (code, error) {
-  this.name = "UnauthorizedError";
-  this.message = error.message;
-  Error.call(this, error.message);
-  Error.captureStackTrace(this, this.constructor);
-  this.code = code;
-  this.status = 401;
-  this.inner = error;
+const errList = require('../constant/error-list')
+
+function CustomError (error) {
+  const { name, code, msg, status } = error
+  Error.captureStackTrace(this, this.constructor) // just in v8, chrome/Node.js
+  Error.call(this, msg)
+  this.name = name
+  // error message
+  this.message = msg
+  // 错误码，对应error-list code
+  this.code = code
+  // http status code
+  this.status = status
 }
 
-UnauthorizedError.prototype = Object.create(Error.prototype);
-UnauthorizedError.prototype.constructor = UnauthorizedError;
+CustomError.prototype = Object.create(Error.prototype);
+CustomError.prototype.constructor = CustomError;
 
-module.exports = UnauthorizedError;
+const getError = (code) => {
+  const err = errList[code]
+  if (err) {
+    return new CustomError(err)
+  } else {
+    return null
+  }
+}
+
+module.exports = getError

@@ -42,32 +42,15 @@ app.use((req, res, next) => {
 
 app.use(function (err, req, res, next) {
   console.log(err)
-  // TODO: 错误验证缺少不同类型的处理方案
-  const { code = 500, msg = 'Server error!', name } = err
+  const { code = 500, message = 'Server error!' } = err
 
-  // 这里捕获的是插件提供的错误
-  if (name === 'JsonWebTokenError') {
-    return res.status(401).send({
-      code: 4000,
-      msg: 'Token invalid.'
-    })
-  }
-  if (name === 'TokenExpiredError') {
-    return res.status(401).send({
-      code: 4001,
-      msg: 'Token expired.'
-    })
-  }
   // set locals, only providing error in development
   res.locals.message = err.message
   res.locals.error = req.app.get('env') === 'development' ? err : {}
 
   // 手动返回错误
   res.status(err.status || 500)
-  res.send({
-    code,
-    msg
-  })
+  res.send({ code, msg: message })
 })
 
 module.exports = app

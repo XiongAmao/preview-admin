@@ -1,8 +1,5 @@
 const express = require('express')
-const jwt = require('jsonwebtoken')
-const { UserModel, addUserToken } = require('../../db/model/User')
-const { createJTI } = require('../../libs/util')
-const jwtCache = require('../cache/jwtCache')
+const { UserModel, checkUserPassword, addUser } = require('../../db/model/User')
 const { jwtAuth } = require('../../middleware/auth')
 const { MD5_SUFFIX, md5, secretKey } = require('../../constant')
 
@@ -11,47 +8,40 @@ const userRouter = express.Router()
 
 userRouter.post('/login', (req, res, next) => {
   const { username, password } = req.body
-  const tokenObj = { username }
 
   if (!username || !password) {
     return next({ code: 400, msg: '请输入账号或密码' })
   }
-
-  UserModel.findOne({ username }, (err, user) => {
-    if (err) return next(err)
-    if (user) {
-      UserModel.findOne({
-        username: username,
-        password: md5(password + MD5_SUFFIX)   //
-      }, (err, user) => {
-        if (err) return next(err)
-        if (user !== null) {
-          // 用户登录成功过后生成token返给前端
-          const token = jwt.sign(tokenObj, secretKey, {
-            expiresIn: '30 days',
-            jwtid: createJTI()
-          })
-          addUserToken(username, token).then(() => {
-            jwtCache.addTokenCache(username, token)
-            return res.json({
-              code: 200,
-              message: '登录成功',
-              token: 'Bearer ' + token,
-              username
-            })
-          }, err => {
-            return next(err)
-          })
-        } else {
-          return next({ status: 400, code: 400, msg: '账号或密码错误' })
-        }
+  checkUserPassword(username, password)
+    .then(() => {
+      req.session.username = username
+      req.session.hasLogin = true
+      return res.json({
+        code: 200,
+        message: '登录成功',
+        username
       })
-    } else { return next({ msg: '账号或密码不正确' }) }
-  })
+    })
+    .catch(err => {
+      return next(err)
+    })
 })
 
-userRouter.post('/logout', jwtAuth, (req, res, next) => {
-
+userRouter.post('/logout', (req, res, next) => {
+  const session = req.session
+  if (session.hasLogin) {
+    session.regenerate(() => {
+      return res.json({
+        msg: 'Logout.',
+        code: 20000
+      })
+    })
+  } else {
+    return res.json({
+      msg: 'It\'s not login',
+      code: 20001
+    })
+  }
 })
 
 userRouter.post('/register', (req, res, next) => {
@@ -63,35 +53,13 @@ userRouter.post('/register', (req, res, next) => {
       msg: '请输入账号或密码'
     })
   }
-
-  UserModel.findOne({
-    username
-  }, (err, user) => {
-    console.log(user)
-    if (err) {
+  addUser(username, password)
+    .then(() => {
+      res.json({ msg: '账号已创建' })
+    })
+    .catch(err => {
       next(err)
-    } else if (user === null) {
-      const insertObj = {
-        username: username,
-        password: md5(password + MD5_SUFFIX),
-        role: 'normal'
-      }
-      const newUser = new UserModel(insertObj)
-      newUser.save(insertObj, (err, doc) => {
-        if (err) {
-          return next(err)
-        } else {
-          return res.json({ code: 200, msg: '用户创建成功' })
-        }
-      })
-    } else {
-      return next({
-        status: 400,
-        code: 4003,
-        msg: '用户名已存在'
-      })
-    }
-  })
+    })
 })
 
 userRouter.get('/:userid', (req, res) => {
