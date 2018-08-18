@@ -21,23 +21,22 @@ const getPreviewList = (entryPath) => {
     console.log('Rp static doesn\'t exist.')
     return []
   }
-
   const previewList = result.map(path => {
     const urlPath = path.replace(entryPath, '') // 资源url入口
     const dirPath = urlPath.replace('/index.html', '') // 目录路径
     const dirList = dirPath.split('/') // ['', '项目', '子项目']
 
     // 现在定成2级目录，如果要分层，需要再加一层目录或者文件夹，以rp文件夹为准
-    if (dirList.length !== 2) return undefined
+    if (dirList.length !== 3) return undefined
 
     const projectName = dirList[1]
     const subName = dirList[2]
-
-    return {
+    const item = {
       path: urlPath,
       projectName,
       subName
     }
+    return item
   }).filter(e => e)
 
   return previewList

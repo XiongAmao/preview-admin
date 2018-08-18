@@ -1,8 +1,7 @@
 const express = require('express')
 const rpRoute = express.Router()
+const { getRpList } = require('../../controller/rp_controller')
 
-rpRoute.use('/list', (req, res, next) => {
+rpRoute.get('/list', getRpList)
 
-})
-// TODO: 需要jwt中间件检查权限
 module.exports = rpRoute

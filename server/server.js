@@ -7,10 +7,11 @@ const mongoose = require('./db')
 const staticRoute = require('./router/static')
 const apiRoute = require('./router/api')
 const secretKey = require('./config').secretKey
-
+const startSchedule = require('./schedule')
 const app = express()
 const db = mongoose() // return connection
 
+startSchedule()
 // 引入session-cookie
 app.use(session({
   secret: secretKey,
