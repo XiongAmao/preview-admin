@@ -23,6 +23,8 @@ const userSchema = new Schema({
   token_list: [String],
   rp_list: [String],
   sketch_list: [String]
+}, {
+  collection: 'users'
 })
 
 module.exports = userSchema
