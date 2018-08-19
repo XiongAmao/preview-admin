@@ -2,7 +2,8 @@ const UserModel = require('../db/model/user_model')
 const SessionModel = require('../db/model/session_model')
 const getError = require('../libs/error')
 
-const { MD5_SUFFIX, md5 } = require('../config')
+const { MD5_SUFFIX } = require('../config')
+const md5 = require('../libs/md5')
 
 const addUserToken = (username, token) => {
   return UserModel.update({username}, { $push: {
@@ -42,7 +43,7 @@ const addUser = (username, password) => {
         const insertObj = {
           username: username,
           password: md5(password + MD5_SUFFIX),
-          role: 'normal'
+          role: 'user'
         }
         const newUser = new UserModel(insertObj)
         newUser.save(insertObj, (err) => {

@@ -1,21 +1,21 @@
 import { login, logout } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/libs/utils.js'
+import { setLoginStatus, getLoginStatus, removeLoginStatus } from '@/libs/utils.js'
 
 export default {
   namespaced: true,
   state: {
     account: '',
     uuid: '',
-    token: getToken()
+    hasLogin: getLoginStatus()
   },
   mutations: {
     setUsername (state, account) {
       state.account = account
     },
-    setToken (state, token) {
-      state.token = token
-      if (token) setToken(token)
-      else removeToken()
+    setLoginStatus (state, boolean) {
+      state.hasLogin = boolean
+      if (boolean) setLoginStatus(boolean)
+      else removeLoginStatus()
     }
   },
   actions: {
@@ -24,7 +24,7 @@ export default {
       return new Promise((resolve, reject) => {
         login({ username, password }).then(res => {
           commit('setUsername', res.username)
-          commit('setToken', res.token)
+          commit('setLoginStatus', true)
           resolve(res)
         }).catch(err => {
           reject(err)
@@ -35,7 +35,7 @@ export default {
       return new Promise((resolve, reject) => {
         logout().then(res => {
           commit('setUsername', '')
-          commit('setToken', '')
+          commit('setLoginStatus', '')
           resolve(res)
         }).catch(err => {
           reject(err)
@@ -45,7 +45,7 @@ export default {
     handleLoginExpired ({ state, commit }) {
       return new Promise((resolve, reject) => {
         commit('setUsername', '')
-        commit('setToken', '')
+        commit('setLoginStatus', '')
         resolve()
       })
     }

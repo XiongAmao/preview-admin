@@ -2,7 +2,7 @@ import { forEach } from './tools'
 import LocalStorage from './local-storage'
 
 const TOKEN_KEY = 'user/setToken' // 与store的commit相关联
-
+const LOGIN_STATUS = 'login_status'
 // 随机生成uuid 供后端调试使用
 export const CreateRequestId = () => {
   var s = []
@@ -51,4 +51,16 @@ export const setToken = (token) => {
 
 export const removeToken = () => {
   return LocalStorage.removeItem(TOKEN_KEY)
+}
+
+export const setLoginStatus = (status) => {
+  return LocalStorage.setItem(LOGIN_STATUS, status)
+}
+
+export const getLoginStatus = () => {
+  return LocalStorage.getItem(LOGIN_STATUS)
+}
+
+export const removeLoginStatus = () => {
+  return LocalStorage.removeItem(LOGIN_STATUS)
 }

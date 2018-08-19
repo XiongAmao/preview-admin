@@ -2,8 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import routes from './routes.js'
 import iView from 'iview'
-import { getToken } from '@/libs/utils.js'
-
+import Store from '../store'
 Vue.use(Router)
 
 const router = new Router({
@@ -15,13 +14,13 @@ const HOME_PAGE_NAME = 'activation-code-list' // TODO: 待定首页为条形码
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
 
-  const token = getToken()
+  const hasLogin = Store.state.user.hasLogin
 
-  if (!token && to.name !== LOGIN_PAGE_NAME) {
+  if (!hasLogin && to.name !== LOGIN_PAGE_NAME) {
     next({
       name: LOGIN_PAGE_NAME
     })
-  } else if (token && to.name === LOGIN_PAGE_NAME) {
+  } else if (hasLogin && to.name === LOGIN_PAGE_NAME) {
     next({
       name: HOME_PAGE_NAME
     })

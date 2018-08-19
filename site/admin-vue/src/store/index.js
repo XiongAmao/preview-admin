@@ -5,9 +5,9 @@ import user from './module/user'
 import app from './module/app'
 
 import localCachePlugin from './plugin/local-cache'
-import { getToken } from '@/libs/utils.js'
+import { getLoginStatus } from '@/libs/utils.js'
 
-const token = getToken()
+const hasLogin = getLoginStatus()
 
 Vue.use(Vuex)
 
@@ -27,9 +27,10 @@ export default new Vuex.Store({
   },
   plugins: [
     localCachePlugin([
-      { type: 'user/setUserUUID', check: token },
-      { type: 'user/setUserAccount', check: token },
-      { type: 'user/setToken', check: token }
+      { type: 'user/setUserUUID', check: hasLogin },
+      { type: 'user/setUserAccount', check: hasLogin },
+      { type: 'user/setLoginStatus', check: hasLogin },
+      { type: 'app/setLoginStatus', check: hasLogin }
     ])
   ]
 })
