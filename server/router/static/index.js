@@ -1,13 +1,14 @@
 const path = require('path')
 const express = require('express')
 const staticRoute = express.Router()
+const { permissionAuth } = require('../../controller/auth_contoller')
 
 const rpStatic = require('./rp_route')
 const sketchStatic = require('./sketch_route')
 
 // 后台入口资源
 staticRoute.use(express.static(path.resolve(__dirname, '../../dist')))
-staticRoute.use('/rp', rpStatic)
+staticRoute.use('/rp', [permissionAuth('rp'), rpStatic])
 staticRoute.use('/sketch', sketchStatic)
 
 module.exports = staticRoute

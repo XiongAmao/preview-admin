@@ -18,6 +18,7 @@ CustomError.prototype.constructor = CustomError;
 
 const getError = (code) => {
   const err = errList[code]
+  err.code = code
   if (err) {
     return new CustomError(err)
   } else {

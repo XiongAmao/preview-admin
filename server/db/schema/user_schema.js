@@ -15,14 +15,14 @@ const userSchema = new Schema({
     type: Date,
     default: Date.now()
   },
-  role: {
+  role: {                   // user/admin 普通用户/管理员
     type: String,
     require: true
   },
-  permission: [],
-  token_list: [String],
-  rp_list: [String],
-  sketch_list: [String]
+  permission: [],           // 权限组，用于管理后台模块入口，比如账号管理模块/rp预览模块，对应
+  token_list: [String],     // jwt存储，暂时不使用
+  rp_list: [String],        // rp可预览权限
+  sketch_list: [String]     // sketch可预览权限
 }, {
   collection: 'users'
 })

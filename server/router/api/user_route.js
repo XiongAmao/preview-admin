@@ -7,12 +7,13 @@ const {
   userList,
   userAuthModify
 } = require('../../controller/user_controller')
+const { adminRoleAuth } = require('../../controller/auth_contoller')
 const userRouter = express.Router()
 
 userRouter.post('/login', userLogin)
 userRouter.post('/logout', userLogout)
-userRouter.post('/register', userRegister)
-userRouter.get('/info/:userid', getUserInfo)
-userRouter.get('/list', userList)
-userRouter.put('/action/modify/:userid', userAuthModify)
+userRouter.post('/register', [adminRoleAuth, userRegister])
+userRouter.get('/info/:userid', [adminRoleAuth, getUserInfo])
+userRouter.get('/list', [adminRoleAuth, userList])
+userRouter.put('/action/modify/:userid', [adminRoleAuth, userAuthModify])
 module.exports = userRouter

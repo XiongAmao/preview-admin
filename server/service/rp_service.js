@@ -22,12 +22,11 @@ const createRpItemByList = (list) => {
   })
 }
 
+// export service
 const updateRPList = () => {
   const localList = getPreviewList(rpEntry)
   return new Promise((resolve, reject) => {
-    RpListModel.find({}, (err, dbList) => {
-      if (err) reject(err)
-      // 获取目录中不存在的项目，用于移除，处理成path数组
+    getRpList().then(dbList => {
       const needRemoveList = dbList
         .filter(dbItem => localList.every(localItem => dbItem.path !== localItem.path))
         .map(item => item.path)
@@ -42,6 +41,16 @@ const updateRPList = () => {
   })
 }
 
+const getRpList = () => {
+  return new Promise((resolve, reject) => {
+    RpListModel.find({}, (err, dbList) => {
+      if (err) reject(err)
+      if (dbList) resolve(dbList)
+    })
+  })
+}
+
 module.exports = {
-  updateRPList
+  updateRPList,
+  getRpList
 }

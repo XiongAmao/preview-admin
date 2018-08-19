@@ -75,10 +75,25 @@ const removeUserSession = (username) => {
   })
 }
 
+const getUserInfo = (username, info) => {
+  return new Promise((resolve, reject) => {
+    UserModel.findOne({username}, (err, user) => {
+      if (err) reject(err)
+      if (user) {
+        const result = user[info] || user
+        resolve(result)
+      } else {
+        getError(40003)
+      }
+    })
+  })
+}
+
 module.exports = {
   removeUserToken,
   addUserToken,
   addUser,
   checkUserPassword,
-  removeUserSession
+  removeUserSession,
+  getUserInfo
 }
