@@ -37,10 +37,11 @@ const rpListAuth = (req, res, next) => {
   getUserInfo(username, 'rp_list').then(rpList => {
     // 通过检查项目名是否允许查看
     const isOk = rpList.some(item => {
-      const regExp = new RegExp(`(all|${item.projectName})`)
+      if (item === 'all') return true
+      const regExp = new RegExp(`${item}`)
       return regExp.test(path)
     })
-    if (isOk) return res.json({ code: 200, msg: 'ok' })
+    if (isOk) return next()
     else return next(getError(40005))
   }).catch(err => next(err))
 }

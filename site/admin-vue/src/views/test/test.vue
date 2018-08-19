@@ -4,7 +4,7 @@
       <i-button @click="getIframe">try me</i-button>
       <i-button @click="inject">inject</i-button>
     </div>
-    <iframe ref="iframe" src="/rp/some-project/1.1/project/index.html"></iframe>
+    <iframe ref="iframe" src="/rp/某项目/1.1/index.html"></iframe>
   </div>
 
 </template>
