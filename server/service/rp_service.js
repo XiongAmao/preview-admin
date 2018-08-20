@@ -2,6 +2,7 @@ const { getPreviewList } = require('../libs/util')
 const RpListModel = require('../db/model/rp_list_model')
 const rpEntry = require('../config').rpDirPath
 
+// TODO: encodeURIComponent path!!!!!!!!!!!
 const removeRpItemsByPathList = (list) => {
   return new Promise((resolve, reject) => {
     if (list.length === 0) return resolve()

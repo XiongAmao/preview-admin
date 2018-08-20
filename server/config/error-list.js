@@ -10,7 +10,7 @@ const errList = {
     msg: '用户名已存在'
   },
   40002: {
-    status: 401,
+    status: 400,
     name: 'PasswordOrUsernameError',
     msg: '用户名或密码错误'
   },
@@ -26,7 +26,7 @@ const errList = {
   },
   40005: {
     status: 401,
-    name: 'RpDenied',
+    name: 'StaticResourceDenied',
     msg: '不允许访问该资源'
   }
 }

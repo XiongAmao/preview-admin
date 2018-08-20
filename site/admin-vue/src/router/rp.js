@@ -13,12 +13,12 @@ export default [
         name: 'rp-list',
         path: 'list',
         component: RpList
-      },
-      {
-        name: 'rp-viewer',
-        path: 'view',
-        componet: RpViewer
       }
     ]
+  },
+  {
+    name: 'rp-viewer',
+    path: '/rp/view',
+    component: RpViewer
   }
 ]
