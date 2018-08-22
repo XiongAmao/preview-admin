@@ -70,7 +70,7 @@
           this.loading = false
           this.$Message.success('登录成功')
           this.$router.push({ // TODO: 暂时跳转到这里
-            name: 'test'
+            name: 'rp-list'
           })
         }).catch(er => {
           this.loading = false

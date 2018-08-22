@@ -28,6 +28,7 @@ export default new Vuex.Store({
   plugins: [
     localCachePlugin([
       { type: 'user/setLoginStatus', check: hasLogin },
+      { type: 'user/setUsername', check: hasLogin },
       { type: 'app/setLoginStatus', check: hasLogin }
     ])
   ]
