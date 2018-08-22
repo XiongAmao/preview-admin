@@ -3,7 +3,7 @@
     <rp-iframe
       class="iframe"
       ref="iframe"
-      :src="rpSrc"
+      :src="computedSrc"
       @hash-update="handleHashUpdate"
     ></rp-iframe>
     <sideSearchMenu></sideSearchMenu>
@@ -46,16 +46,17 @@
     },
     computed: {
       iframePath() {
-        console.log('path:::', this.$route.query.path)
         return this.$route.query.path || ''
       },
       iframeHash() {
-        console.log('hash:::', this.$route.query.hash)
         return this.$route.query.hash || ''
+      },
+      computedSrc() {
+        return `/rp/${this.iframePath}#g=1&p=${this.iframeHash}`
       }
     },
     created() {
-      this.rpSrc = `${this.iframePath}#g=1&p=${this.iframeHash}`
+      if (!this.iframePath) this.$router.push({ name: 'rp-list'})
     }
   }
 </script>

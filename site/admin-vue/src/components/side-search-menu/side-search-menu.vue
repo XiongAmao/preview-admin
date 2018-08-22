@@ -1,127 +1,201 @@
 <template>
   <div class="side-search-menu" :class="{visual: visual}">
-    <div class="search-wrapper">
-      <i-input v-model="searchVal" enter-button placeholder="Enter something..." />
-    </div>
-    <div class="tree-wrapper">
-      <i-tree :data="list" :render="renderFn" @on-select-change="handleSelect"></i-tree>
+    <div class="content">
+      <div class="info-wrapper">
+        当前项目: {{ iframePath.split('/')[1] + ' / ' + iframePath.split('/')[2] }}
+      </div>
+      <div class="search-wrapper">
+        <i-input
+          :value="searchVal"
+          enter-button
+          placeholder="搜索目录..."
+          suffix="ios-search"
+          @on-change="handleSearchInputChange"
+        />
+      </div>
+
+      <div class="tree-wrapper">
+        <i-tree :data="list" :render="renderFn"></i-tree>
+      </div>
+      <Divider style="margin: 8px"></Divider>
+      <div class="content-btn-wrapper">
+        <i-button type="info" long @click="backToList">返回主页</i-button>
+      </div>
     </div>
     <div class="hide-btn" @click="hide">
-      <div>快</div>
-      <div>捷</div>
-      <div>菜</div>
-      <div>单</div>
+      <i-icon type="md-menu" size="14"></i-icon>
+      <div>目</div>
+      <div>录</div>
       <span></span>
     </div>
   </div>
 </template>
 
 <script>
+  import rpApi from '@/api/rp'
+  import TreeBtn from './components/tree-btn.vue'
+  import debounce from 'lodash/debounce'
+  // TODO: 适配sketch 页面
   export default {
+    components: {
+      TreeBtn
+    },
     data() {
       return {
-        list: [],
+        rawList: [],
         visual: false,
         searchVal: ''
       }
     },
     methods: {
-      handleSelect(val) {
-        console.log(val)
-      },
       renderFn(h, { root, node, data}) {
+        const title = data.projectName || data.subName
         return (
-          <span
-            style={{
-              cursor: 'pointer'
-            }}
-            onClick={this.handleTreeClick(data.title)}
-          >{data.title}</span>
+          <TreeBtn
+            dim={data.dim}
+            title={title}
+            active={data.active}
+            treeClickHandle={this.handleTreeClick(node, data)}
+          />
         )
       },
-      handleTreeClick (title) {
+      handleTreeClick (node, data) {
         return () => {
-          console.log(title)
+          const nk = node.nodeKey
+
+          if (data.projectName) {
+            this.list.map(node => {
+              if (node.nodeKey === nk) { node.expand = !node.expand }
+            })
+          } else {
+            this.$router.push({
+              name: 'rp-viewer',
+              query: { path: data.path, hash: '' }
+            })
+          }
         }
       },
       hide() {
         this.visual = !this.visual
+      },
+      getList() {
+        rpApi.getRpList().then(res => {
+          this.rawList = res.list
+        })
+      },
+      handleSearchInputChange: debounce(
+        function (e) {
+          this.searchVal = e.target.value
+        }, 300, {leading: false}
+      ),
+      backToList() {
+        this.$router.push({
+          name: 'rp-list'
+        })
+      }
+    },
+    computed: {
+      iframePath() {
+        return this.$route.query.path
+      },
+      originalList () {
+        return this.rawList.map(i => {
+          const children = i.children.map(e => {
+            const active = e.path === this.iframePath
+            return { subName: e.subName, path: e.path, expand: false, active }
+          })
+          const expand = children.some(e => {
+            return e.active
+          })
+          return { expand: expand, children, projectName: i.projectName }
+        })
+      },
+      list () {
+        const val = this.searchVal
+        if (!val) return Array.from(this.originalList)
+
+        const reg = new RegExp(val)
+        const arr = this.originalList.map(e => {
+          let p = e.projectName
+          if(reg.test(p)) {
+            return Object.assign({}, e, { expand: true })
+          } else {
+            const match = e.children.some(i =>  reg.test(i.subName))
+            if (match) {
+              return Object.assign({}, e, { expand: true, dim: true })
+            }
+          }
+        }).filter(e => e)
+        return arr
       }
     },
     created() {
-      this.list = [
-        {
-          title: 'project1',
-          expand: false,
-          children: [
-            {
-              title: '1.1',
-              expand: false
-            },
-            {
-              title: '阿凡达撒扥啊',
-              expand: false
-            }
-          ],
-        },
-        {
-          title: 'project1',
-          expand: false,
-          children: [
-            {
-              title: '1.1',
-              expand: false
-            },
-            {
-              title: '阿凡达撒扥啊',
-              expand: false
-            }
-          ],
-        }
-      ]
+      this.getList()
     }
   }
 </script>
 
 <style scoped lang="scss">
   .side-search-menu {
+    box-sizing: border-box;
     position: fixed;
-    top: 50%;
-    right: -200px;
-    min-width: 200px;
-    min-height: 200px;
-    border-radius: 4px;
-    border-top-left-radius: 0;
+    top: 30%;
+    right: -220px;
+    width: 260px;
+    min-height: 120px;
+    background: #F6F9FA;
+    border-radius: 6px;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
     border: 1px solid #ccc;
     transition: .3s ease-in-out;
 
     &.visual {
-      right: 0px;
+      right: -1px;
     }
   }
+
+  .content {
+    padding-left: 40px;
+  }
+
+  .info-wrapper {
+    padding: 12px 12px 0;
+  }
   .search-wrapper {
-    padding: 12px;
+    padding: 12px 12px 0;
   }
 
   .tree-wrapper {
     padding: 12px;
+    margin-bottom: 16px;
   }
-
+  .content-btn-wrapper {
+    padding: 8px 4px;
+  }
+  .footer-btn {
+    position: absolute;
+    bottom: -32px;
+    right: 120px;
+  }
   .hide-btn {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
     position: absolute;
-    padding:16px;
-    left: -45px;
-    top: -1px;
-    border-left: 1px solid #ccc;
-    border-top: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
-    border-radius: 4px;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    background: #fff;
-  }
+    width: 40px;
+    left: 0px;
+    top: 0;
+    height: 100%;
+    border-right: 1px solid #ccc;
+    transition: .3s ease;
 
+    &:hover {
+      color: #fff;
+      background: #00a1d6;
+    }
+  }
 </style>

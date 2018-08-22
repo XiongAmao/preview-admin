@@ -51,7 +51,11 @@ const getRpList = () => {
   })
 }
 
+const getRpListWithAuth = () => {
+
+}
 module.exports = {
   updateRPList,
-  getRpList
+  getRpList,
+  getRpListWithAuth
 }

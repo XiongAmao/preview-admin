@@ -24,7 +24,6 @@ const permissionAuth = (entry) => {
     getUserInfo(username, 'permission').then(permissions => {
       const string = permissions.join(',')
       const isOk = permissionRegExp.test(string)
-
       if (isOk) return next()
       else return next(getError(40004))
     }).catch(err => next(err))

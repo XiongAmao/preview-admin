@@ -84,7 +84,7 @@ const getUserInfo = (username, info) => {
         const result = user[info] || user
         resolve(result)
       } else {
-        getError(40003)
+        reject(getError(40003))
       }
     })
   })
