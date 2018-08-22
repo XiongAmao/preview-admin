@@ -2,7 +2,7 @@ const errList = require('../config/error-list')
 
 function CustomError (error) {
   const { name, code, msg, status } = error
-  Error.captureStackTrace(this, this.constructor) // just in v8, chrome/Node.js
+  // Error.captureStackTrace(this, this.constructor) // just in v8, chrome/Node.js
   Error.call(this, msg)
   this.name = name
   // error message

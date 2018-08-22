@@ -8,6 +8,8 @@ const staticRoute = require('./router/static')
 const apiRoute = require('./router/api')
 const secretKey = require('./config').secretKey
 const startSchedule = require('./schedule')
+const errorHandler = require('./middleware/error')
+
 const app = express()
 const db = mongoose() // return connection
 
@@ -40,17 +42,6 @@ app.use((req, res, next) => {
   })
 })
 
-app.use(function (err, req, res, next) {
-  console.log(err)
-  const { code = 500, message = 'Server error!' } = err
-
-  // set locals, only providing error in development
-  res.locals.message = err.message
-  res.locals.error = req.app.get('env') === 'development' ? err : {}
-
-  // 手动返回错误
-  res.status(err.status || 500)
-  res.send({ code, msg: message })
-})
+app.use(errorHandler)
 
 module.exports = app
