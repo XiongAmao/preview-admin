@@ -7,7 +7,7 @@ const parse = require('url').parse
 let proxyList = {}
 
 // handle path params
-function pathMatch(path) {
+function pathMatch (path) {
   const options = {
     sensitive: false,
     strict: false,
@@ -15,7 +15,7 @@ function pathMatch(path) {
   }
   let keys = []
   let re = pathToRegexp(path, keys, options)
-  return function(pathname, params = {}) {
+  return function (pathname, params = {}) {
     var m = re.exec(pathname)
     if (!m) return false
     var key, param
@@ -35,31 +35,32 @@ function pathMatch(path) {
  * @param {obj} app
  * @returns void
  */
-module.exports = function(entryPath, app) {
+module.exports = function (entryPath, app) {
   const entryDirPath = path.dirname(entryPath)
   proxyList = require(entryPath)
   // watch mock DIR
   var watcher = chokidar.watch(entryDirPath)
   watcher.on('all', (event, path) => {
-    if (event === 'change' || event === 'add') {
+    if (path === __filename) return
+    // change文件 add文件时的处理方式不同
+    if (event === 'change') {
       try {
-        // pre-reference
-        const mockData = require(entryPath)
-        // if no error & cleanCache
-        cleanCache(path)
-        if (path !== entryPath || path !== __filename) {
-          cleanCache(entryPath)
-        }
-        // require again
+        cleanCacheWhenChange(path, entryPath)
+        proxyList = require(entryPath)
+      } catch (err) {}
+    }
+    if (event === 'add') {
+      try {
+        cleanCacheWhenAdd(entryPath)
         proxyList = require(entryPath)
       } catch (err) {}
     }
   })
-  
+
   // handle request
-  app.all('/*', function(req, res, next) {
+  app.all('/*', function (req, res, next) {
     const reqURL = `${req.method} ${req.path}`
-    const containMockURL = Object.keys(proxyList).filter(function(kname) {
+    const containMockURL = Object.keys(proxyList).filter(function (kname) {
       const mockURL = kname.split(' ')
       if (mockURL && mockURL.length === 2 && mockURL[0] === req.method) {
         return !!pathMatch(mockURL[1])(parse(req.url).pathname) // if has params
@@ -73,7 +74,7 @@ module.exports = function(entryPath, app) {
       if (contentType === 'text/plain') {
         bodyParseMethod = bodyParser.raw({ type: 'text/plain' })
       }
-      bodyParseMethod(req, res, function() {
+      bodyParseMethod(req, res, function () {
         const mockData = proxyList[reqURL] || proxyList[containMockURL[0]]
         if (typeof mockData === 'function') {
           //  inject path params to req
@@ -94,19 +95,75 @@ module.exports = function(entryPath, app) {
     }
   })
 
-  function cleanCache(modulePath) {
-    var module = require.cache[modulePath]
-    if (!module) return
-    // remove reference in module.parent
-    if (module.parent) {
-      module.parent.children.splice(module.parent.children.indexOf(module), 1)
+  function cleanCacheWhenAdd (entryPath) {
+    const nodeList = []
+
+    getChildrenModuleName(entryPath)
+    // 处理所有子项
+    nodeList.forEach(filename => cleanCache(filename))
+    // 处理入口文件
+    cleanCache(entryPath, true)
+
+    function getChildrenModuleName (path) {
+      const module = require.cache[path]
+
+      if (!module) return
+
+      if (path !== entryPath) {
+        nodeList.push(module.filename)
+      }
+
+      module.children.forEach(m => getChildrenModuleName(m.filename))
     }
-    // remove cache
-    delete require.cache[modulePath]
   }
 
-  return function(req, res, next) {
+  function cleanCacheWhenChange (targetPath, entryPath) {
+    const pathModule = require.cache[targetPath]
+    const nodeList = []
+    let hasReference = false
+
+    if (!pathModule) return
+
+    if (targetPath === entryPath) {
+      cleanCache(targetPath)
+    } else {
+      // 递归从更新的文件开始找父引用直到找到入口文件
+      checkParentModule(targetPath)
+      // 如果找到入口文件，则清理该链路上的缓存
+      if (hasReference) {
+        nodeList.forEach(path => cleanCache(path))
+        cleanCache(entryPath, true)
+      }
+    }
+
+    function checkParentModule (path) {
+      const module = require.cache[path]
+      if (module && module.parent) {
+        const parent = module.parent
+
+        if (module.filename === entryPath) {
+          hasReference = true
+        } else {
+          nodeList.push(path)
+          return checkParentModule(parent.filename)
+        }
+      }
+    }
+  }
+
+  function cleanCache (path, cleanParent = false) {
+    var module = require.cache[path]
+    if (!module) return
+    if (cleanParent) {
+      const parent = module.parent
+      if (parent) {
+        parent.children.splice(parent.children.indexOf(module), 1)
+      }
+    }
+    require.cache[path] = null
+  }
+
+  return function (req, res, next) {
     next()
   }
 }
-
