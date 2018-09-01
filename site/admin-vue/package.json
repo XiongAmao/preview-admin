@@ -32,9 +32,12 @@
     "@vue/cli-service": "^3.0.0-rc.5",
     "@vue/eslint-config-standard": "^3.0.0-rc.5",
     "babel-plugin-import": "^1.8.0",
+    "body-parser": "^1.18.3",
+    "chokidar": "^2.0.4",
     "eslint-plugin-html": "^4.0.5",
     "iview-loader": "^1.2.1",
     "node-sass": "^4.9.0",
+    "path-to-regexp": "^2.3.0",
     "sass-loader": "^7.0.1",
     "vue-template-compiler": "^2.5.16"
   }

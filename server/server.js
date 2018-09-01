@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session)
+const helmet = require('helmet')
 
 const mongoose = require('./db')
 const staticRoute = require('./router/static')
@@ -14,6 +15,9 @@ const app = express()
 const db = mongoose() // return connection
 
 startSchedule()
+
+app.use(helmet())
+
 // 引入session-cookie
 app.use(session({
   secret: secretKey,

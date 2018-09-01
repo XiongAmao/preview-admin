@@ -7,7 +7,7 @@ const resolve = (dir) => {
 }
 
 module.exports = {
-  baseUrl: process.env.NODE_ENV === 'production' ? '/admin/' : '/',
+  baseUrl: process.env.NODE_ENV === 'production' ? '/' : '/',
   // 根据需要配置完整的路径 https://cli.vuejs.org/config/#baseurl
   outputDir: path.resolve('../../server/dist'),
   productionSourceMap: false,

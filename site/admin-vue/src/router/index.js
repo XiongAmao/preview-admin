@@ -9,7 +9,7 @@ const router = new Router({
   routes
 })
 const LOGIN_PAGE_NAME = 'login'
-const HOME_PAGE_NAME = 'activation-code-list' // TODO: 待定首页为条形码
+const HOME_PAGE_NAME = 'rp-list'
 
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()

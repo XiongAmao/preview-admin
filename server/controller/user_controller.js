@@ -1,4 +1,4 @@
-const { checkUserPassword, addUser } = require('../service/user_service')
+const userService = require('../service/user_service')
 
 const userLogin = (req, res, next) => {
   const { username, password } = req.body
@@ -6,7 +6,7 @@ const userLogin = (req, res, next) => {
   if (!username || !password) {
     return next({ code: 400, msg: '请输入账号或密码' })
   }
-  checkUserPassword(username, password)
+  userService.checkUserPassword(username, password)
     .then(() => {
       req.session.username = username
       req.session.hasLogin = true
@@ -47,7 +47,7 @@ const userRegister = (req, res, next) => {
       msg: '请输入账号或密码'
     })
   }
-  addUser(username, password)
+  userService.addUser(username, password)
     .then(() => {
       res.json({ msg: '账号已创建' })
     })
@@ -60,8 +60,24 @@ const getUserInfo = (req, res, next) => {
 
 }
 
-const userList = (req, res, next) => {
-
+const getUserList = (req, res, next) => {
+  userService.getUserList()
+    .then((users) => {
+      console.log(users)
+      const result = users.map(e => {
+        return {
+          username: e.username,
+          permission: e.permission,
+          rpList: e['rp_list']
+        }
+      })
+      res.json({
+        list: result
+      })
+    })
+    .catch(err => {
+      next(err)
+    })
 }
 
 const userAuthModify = (req, res, next) => {
@@ -73,6 +89,6 @@ module.exports = {
   userLogin,
   userRegister,
   getUserInfo,
-  userList,
+  getUserList,
   userAuthModify
 }

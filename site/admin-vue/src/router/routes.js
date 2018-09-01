@@ -3,17 +3,16 @@ import user from './user'
 
 const routes = [
   {
+    path: '/',
+    redirect: '/login'
+  },
+  {
     path: '/login',
     name: 'login',
     meta: {
       hideInMenu: true
     },
     component: () => import('@/views/login/login.vue')
-  },
-  {
-    path: '/',
-    name: 'test',
-    component: () => import('@/views/test/test.vue')
   },
   ...rp,
   ...user,

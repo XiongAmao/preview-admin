@@ -9,9 +9,8 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'generator-star-spacing': 'off',
     'no-trailing-spaces': 0,
-    'vue/no-parsing-error': [2, { 'x-invalid-end-tag': false }] // iview 错误提示
+    'indent': 'off'
   },
-  plugins: ['html'],
   parserOptions: {
     parser: 'babel-eslint'
   }

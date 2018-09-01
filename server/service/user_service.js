@@ -43,7 +43,9 @@ const addUser = (username, password) => {
         const insertObj = {
           username: username,
           password: md5(password + MD5_SUFFIX),
-          role: 'user'
+          role: 'user',
+          permission: ['rp'],
+          rp_list: ['all']
         }
         const newUser = new UserModel(insertObj)
         newUser.save(insertObj, (err) => {
@@ -90,11 +92,20 @@ const getUserInfo = (username, info) => {
   })
 }
 
+const getUserList = () => {
+  return new Promise((resolve, reject) => {
+    UserModel.find({ role: 'user' }, (err, users) => {
+      if (err) return reject(err)
+      return resolve(users || [])
+    })
+  })
+}
 module.exports = {
   removeUserToken,
   addUserToken,
   addUser,
   checkUserPassword,
   removeUserSession,
-  getUserInfo
+  getUserInfo,
+  getUserList
 }
